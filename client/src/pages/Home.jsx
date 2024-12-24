@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import MainCategories from "../components/MainCategories";
 
 const Home = () => {
   return (
@@ -55,6 +56,7 @@ const Home = () => {
           </button>
         </Link>
       </div>
+      <MainCategories/>
     </div>
   );
 };

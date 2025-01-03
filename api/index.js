@@ -3,7 +3,9 @@ import userRouter from './routes/user.route.js'
 import commentsRouter from './routes/comment.route.js'
 import postsRouter from './routes/post.route.js'
 import connectDb from './lib/connectDb.js'
+import webHookRouter from './routes/webhook.route.js'
 const app =express();
+app.use('/webhooks', webHookRouter);
 app.use(express.json())
 
 app.use('/users', userRouter);

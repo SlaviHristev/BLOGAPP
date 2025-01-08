@@ -4,10 +4,16 @@ import commentsRouter from './routes/comment.route.js'
 import postsRouter from './routes/post.route.js'
 import connectDb from './lib/connectDb.js'
 import webHookRouter from './routes/webhook.route.js'
+import { clerkMiddleware } from '@clerk/express'
+
 const app =express();
+app.use(clerkMiddleware())
 app.use('/webhook', webHookRouter);
 
 app.use(express.json());
+
+
+
 app.use('/users', userRouter);
 app.use('/posts', postsRouter);
 app.use('/comments', commentsRouter);

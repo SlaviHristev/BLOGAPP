@@ -1,3 +1,4 @@
+import ImageKit from "imagekit";
 import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 
@@ -12,16 +13,15 @@ export const getPost = async (req, res) => {
 
 export const createPost = async (req, res) => {
   const clerkUserId = req.auth.userId;
- 
+
   if (!clerkUserId) {
     return res.status(401).json("not authenticated");
   }
-  
-  const user = await User.findOne({clerkUserId});
+
+  const user = await User.findOne({ clerkUserId });
   if (!user) {
     return res.status(404).json("User not found!");
   }
-
 
   let slug = req.body.title.replace(/ /g, "-").toLowerCase();
 
@@ -56,4 +56,14 @@ export const deletePost = async (req, res) => {
     return res.status(403).json("You can delete only your posts!");
   }
   res.status(200).json("Post has been deleted!");
+};
+
+const imagekit = new ImageKit({
+  urlEndpoint: process.env.IK_URL_ENDPOINT,
+  publicKey: process.env.IK_PUBLIC_KEY,
+  privateKey: process.env.IK_PRIVATE_KEY,
+});
+export const uploadAuth = async (req, res) => {
+  const result = imagekit.getAuthenticationParameters();
+  res.send(result);
 };

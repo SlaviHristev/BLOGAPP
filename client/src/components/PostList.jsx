@@ -13,9 +13,9 @@ const PostList = () =>{
         queryFn:()=> fetchPosts()
     });
 
-    if(isPending) return "Loading..."
+    if(isPending) return "Loading...";
 
-    if(error) return "Error occured"
+    if(error) return "Error occured";
 
     return(
         <div className="flex flex-col gap-12 mb-8">

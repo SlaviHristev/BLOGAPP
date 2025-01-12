@@ -1,19 +1,26 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import PostListItem from "./PostListItem";
 import axios from 'axios';
 
-const fetchPosts = async () =>{
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/posts`);
+const fetchPosts = async (pageParam) =>{
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/posts`, {
+        params:{page:pageParam}
+    });
     return res.data;
 };
 const PostList = () =>{
 
-    const {isPending, error, data} = useQuery({
-        queryKey:['test'],
-        queryFn:()=> fetchPosts()
-    });
+   const {data,error,fetchNextPage,isFetching,isFetchingNextPage,status} = useInfiniteQuery({
+    queryKey:['posts'],
+    queryFn:({pageParam = 1}) => fetchPosts(pageParam),
+    initialPageParam:1,
+    getNextPageParam:(lastPage, pages) => lastPage.hasMore ? pages.length + 1 : undefined
+   })
 
-    if(isPending) return "Loading...";
+
+   
+
+    if(isFetching) return "Loading...";
 
     if(error) return "Error occured";
 

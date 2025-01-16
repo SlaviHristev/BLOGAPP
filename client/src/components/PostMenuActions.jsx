@@ -1,6 +1,8 @@
-import Image from "./Image";
+import { useAuth, useUser } from "@clerk/clerk-react";
 
-const PostMenuActions = () => {
+const PostMenuActions = ({ post }) => {
+  const { user } = useUser();
+  const { getToken } = useAuth();
   return (
     <div className="">
       <h1 className="mt-8 mb-4 text-sm font-medium">Actions</h1>
@@ -19,8 +21,9 @@ const PostMenuActions = () => {
         </svg>
         <span>Save this Post</span>
       </div>
-      <div className="flex items-center gap-2 py-2 text-sm cursor-pointer">
-      <svg
+      {user && post.user.username === user.username && (
+        <div className="flex items-center gap-2 py-2 text-sm cursor-pointer">
+          <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 48 48"
             width="20px"
@@ -32,8 +35,9 @@ const PostMenuActions = () => {
               strokeWidth="2"
             />
           </svg>
-        <span>Delete this Post</span>
-      </div>
+          <span>Delete this Post</span>
+        </div>
+      )}
     </div>
   );
 };

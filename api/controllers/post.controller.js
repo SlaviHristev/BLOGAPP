@@ -6,6 +6,31 @@ export const getPosts = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 2;
 
+  const query = {};
+
+  const cat = req.query.cat;
+  const author = req.query.author;
+  const searchQuery = req.query.searchQuery;
+  const sortQuery = req.query.sortQuery;
+  const featuredPosts = req.query.featuredPosts;
+
+  if (cat) {
+    query.category = cat;
+  }
+
+  if (searchQuery) {
+    query.title = { $regex: searchQuery, $options: "i" };
+  }
+
+  if (author) {
+    const user = await User.findOne({ username: author }).select("_id");
+    if(!user){
+      return res.status(404).json("No user found!");
+    };
+    query.user = user._id;
+  }
+
+
   const posts = await Post.find()
     .populate("user", "username")
     .limit(limit)
@@ -86,8 +111,6 @@ export const uploadAuth = async (req, res) => {
   const result = imagekit.getAuthenticationParameters();
   res.send(result);
 };
-
-
 
 export const featurePost = async (req, res) => {
   const clerkUserId = req.auth.userId;

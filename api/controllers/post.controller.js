@@ -24,15 +24,39 @@ export const getPosts = async (req, res) => {
 
   if (author) {
     const user = await User.findOne({ username: author }).select("_id");
-    if(!user){
+    if (!user) {
       return res.status(404).json("No user found!");
-    };
+    }
     query.user = user._id;
   }
 
+  let sortObj = { createdAt: -1 };
 
-  const posts = await Post.find()
+  if (sortQuery) {
+    switch (sortQuery) {
+      case "newest":
+        sortObj = { createdAt: -1 };
+        break;
+      case "oldest":
+        sortObj = { createdAt: 1 };
+        break;
+      case "popular":
+        sortObj = { visit: -1 };
+        break;
+      case "trending":
+        sortObj = { visit: -1 };
+        query.createdAt = {
+          $gte: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000),
+        };
+        break;
+      default:
+        break;
+    }
+  }
+
+  const posts = await Post.find(query)
     .populate("user", "username")
+    .sort(sortObj)
     .limit(limit)
     .skip((page - 1) * limit);
 

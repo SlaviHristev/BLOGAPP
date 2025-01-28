@@ -12,7 +12,7 @@ export const getPosts = async (req, res) => {
   const author = req.query.author;
   const searchQuery = req.query.searchQuery;
   const sortQuery = req.query.sortQuery;
-  const featuredPosts = req.query.featuredPosts;
+  const featured = req.query.featured;
 
   if (cat) {
     query.category = cat;
@@ -52,6 +52,10 @@ export const getPosts = async (req, res) => {
       default:
         break;
     }
+  }
+
+  if(featured){
+     query.isFeatured = true;
   }
 
   const posts = await Post.find(query)
